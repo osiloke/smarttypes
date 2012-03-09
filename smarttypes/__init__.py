@@ -33,7 +33,7 @@ default_title = '%s - %s' % (site_name, site_mantra)
 site_description = """
 SmartTypes is an open platform for social network exploration. 
 Our aim is to model and understand the complex interactions of niche social groups. 
-Our methods are influenced by statistical mechanics, thermodynamics, and network science. 
+Our methods are influenced by statistical mechanics, ecology, and network science. 
 Sign in w/ your twitter account to reserve a spot on our free beta roster.
 """
 site_description = site_description.strip()
