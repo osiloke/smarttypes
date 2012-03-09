@@ -93,6 +93,7 @@ class GraphReduce(object):
                 input_file.write('%s %s \n' % (node_id, following_id))
         input_file.close()
         #to recompile
+        #$ cd smarttypes/smarttypes/graphreduce/LinLogLayout/src/
         #$ javac -d ../bin LinLogLayout.java
         os.system('cd %s/LinLogLayout; java -cp bin LinLogLayout 2 %s %s;' % (
             self.graphreduce_dir,
