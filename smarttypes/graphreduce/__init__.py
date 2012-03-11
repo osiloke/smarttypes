@@ -2,13 +2,11 @@
 import os
 from collections import defaultdict
 import numpy as np
+from scipy.spatial import distance
 from sklearn.cluster import DBSCAN, MeanShift, estimate_bandwidth
 import networkx
-
 import ctypes
-
 EPS = 1e-6
-EPS2 = 0
 
 
 class GraphReduce(object):
@@ -17,11 +15,15 @@ class GraphReduce(object):
 
         self.reduction_id = reduction_id
         self.initial_follower_followies_map = initial_follower_followies_map
-        self.G = self.get_networkx_graph()
-        print "Running graph_reduce on %s nodes." % self.G.number_of_nodes()
-
         self.reduction = []
-        self.layout_clusters = []
+        self.groups = []
+        self.n_groups = 0
+
+        self.G = self.get_networkx_graph()
+        self.n = self.G.number_of_nodes()
+        print "Running graph_reduce on %s nodes." % self.n
+        self.A = networkx.to_numpy_matrix(self.G)
+        self.A = np.asarray(self.A)  # adjacency matrix
 
         self.layout_ids = []
         self.id_to_idx_map = {}
@@ -30,6 +32,12 @@ class GraphReduce(object):
             self.layout_ids.append(node_id)
             self.id_to_idx_map[node_id] = i
             i += 1
+
+        self.in_degrees = self.A.sum(axis=0)
+        for node_id, in_degree in self.G.in_degree_iter():
+            i = self.id_to_idx_map[node_id]
+            if in_degree != self.in_degrees[i]:
+                raise Exception('This is not good. This should not happen.')
 
         ##file paths
         self.graphreduce_dir = os.path.dirname(os.path.abspath(__file__))
@@ -42,12 +50,9 @@ class GraphReduce(object):
         self.linloglayout_input_file_path = '%s/%s' % (self.graphreduce_io_dir,
             self.linloglayout_input_file_name)
 
-        #load last reduction if it's there
-        if os.path.exists(self.reduction_file_path):
-            self.load_reduction_from_file()
-
-        #exafmm_solver
-        self.exafmm_solver = ctypes.CDLL("%s/libcoulomb.so" % self.graphreduce_dir)
+        # #load last reduction if it's there
+        # if os.path.exists(self.reduction_file_path):
+        #     self.load_reduction_from_file()
 
     def get_networkx_graph(self):
         if not '_G' in self.__dict__:
@@ -62,13 +67,20 @@ class GraphReduce(object):
 
     def load_reduction_from_file(self):
         f = open(self.reduction_file_path)
-        list_of_coordinates = []
+        list_of_coordinates = [[0,0]] * (self.n + 1)
+        groups = [0] * (self.n + 1)
         for line in f:
             line_pieces = line.split(' ')
+            node_id = line_pieces[0]
+            node_idx = self.id_to_idx_map[node_id]
             x_value = float(line_pieces[1])
             y_value = float(line_pieces[2])
-            list_of_coordinates.append([x_value, y_value])
+            group_num = int(line_pieces[4])
+            list_of_coordinates[node_idx] = [x_value, y_value]
+            groups[node_idx] = group_num
         self.reduction = np.array(list_of_coordinates)
+        self.groups = np.array(groups) - 1
+        self.n_groups = len(set(self.groups)) - (1 if -1 in self.groups else 0)
 
     def normalize_reduction(self):
         x_mean = np.mean(self.reduction[:,0])
@@ -80,11 +92,20 @@ class GraphReduce(object):
         if x_floor < y_floor:
             print "mean: %s -- standard_deviation: %s" % (x_mean, x_standard_deviation)
             self.reduction -= x_floor
-            self.reduction /= x_mean + x_standard_deviation
+            self.reduction /= x_mean + x_standard_deviation * 2
         else:
             print "mean: %s -- standard_deviation: %s" % (y_mean, y_standard_deviation)
             self.reduction -= y_floor
-            self.reduction /= y_mean + y_standard_deviation
+            self.reduction /= y_mean + y_standard_deviation * 2
+
+    def figure_out_reduction_distances(self):
+        self.reduction_distances = distance.squareform(distance.pdist(self.reduction))
+
+    def get_linlog_objective_score(self):
+        all_distances_sum = np.sum(self.reduction_distances)
+        connected_distances_sum = 1 #use in_degrees here
+        obj_measure = all_distances_sum - np.log(connected_distances_sum)
+        return obj_measure
 
     def reduce_with_linloglayout(self):
         input_file = open(self.linloglayout_input_file_path, 'w')
@@ -102,151 +123,22 @@ class GraphReduce(object):
         ))
         self.load_reduction_from_file()
         self.normalize_reduction()
-        self.find_dbscan_clusters()
+        self.figure_out_reduction_distances()
+        self.find_dbscan_groups()
 
-    def reduce_with_exafmm(self):
-        #helper functions specific to this method
-        def x_to_reduction(x):
-            list_of_coordinates = []
-            for i in range(self.G.number_of_nodes()):
-                x_cord = x[i * 3]
-                y_cord = x[i * 3 + 1]
-                list_of_coordinates.append([x_cord, y_cord])
-            self.reduction = np.array(list_of_coordinates)
+    def reduce_with_particle_filter_simulation():
 
-        def reduction_to_x():
-            x = []
-            for row in self.reduction:
-                x.append(row[0])
-                x.append(row[1])
-                x.append(0)  # exafmm is 3d
-            return np.array(x)
+        """
+        interested in finding a 2d reduction where:
 
-        n = self.G.number_of_nodes()
-        A = networkx.to_numpy_matrix(self.G)
-        A = np.asarray(A)  # adjacency matrix
+         ADAN = ADCN
+        """
+        #interested in finding a 2d reduction where
+        #
 
-        #node_degrees and sanity check
-        node_degrees = A.sum(axis=0) + 1
-        for node_id, in_degree in self.G.in_degree_iter():
-            i = self.id_to_idx_map[node_id]
-            if in_degree != node_degrees[i] - 1:
-                raise Exception('This is not good. This should not happen.')
-        #node_degrees /= np.max(node_degrees)
+    def find_dbscan_groups(self, eps=0.42, min_samples=12):
+        S = 1 - (self.reduction_distances / np.max(self.reduction_distances))
+        db = DBSCAN().fit(S, eps=eps, min_samples=min_samples)
+        self.groups = db.labels_
+        self.n_groups = len(set(self.groups)) - (1 if -1 in self.groups else 0)
 
-        #params
-        iterations = 200
-        attractive_force_factor = .5
-        repulsive_force_factor = .00005
-        potential_force_factor = 0.0
-
-        #coordinates
-        self.reduction = []
-        if len(self.reduction):
-            x = reduction_to_x()
-        else:
-            x = np.random.random(3 * n) * 10
-        x[2::3] = 0  # make sure z is 0 for 2d
-        q = (np.ones(n) * node_degrees) + 1  # charges
-        p = np.ones(n) * potential_force_factor  # potential
-        f = np.zeros(3 * n)  # force
-
-        energy_status_msg = 0
-        for i in range(iterations):
-            #repulsion
-            # self.exafmm_solver.FMMcalccoulomb(n, x.ctypes.data, q.ctypes.data,
-            #     p.ctypes.data, f.ctypes.data, 0)
-
-            #attraction and move
-            attraction_repulsion_factors = []
-            for j in range(n):
-                node_id = self.layout_ids[j]
-                node_f = f[3 * j: 3 * j + 2]
-                node_x = x[3 * j: 3 * j + 2]
-                node_following = set(self.G.successors(node_id))
-
-                #attraction
-                attraction_f = np.array([0.0, 0.0])
-                for following_id in node_following:
-                    following_idx = self.id_to_idx_map[following_id]
-                    following_x = x[3 * following_idx: 3 * following_idx + 2]
-                    following_following = set(self.G.successors(following_id))
-                    in_common = len(node_following.intersection(following_following))
-
-                    delta_x = following_x - node_x
-                    following_delta_x_norm = np.linalg.norm(delta_x)
-                    if following_delta_x_norm > EPS:
-                        attraction_f += delta_x * np.log(1 + following_delta_x_norm) \
-                            * attractive_force_factor * (in_common / 5.0)
-                
-                #compare attraction + repulsion forces
-                repulsion_f_norm = np.linalg.norm(node_f)
-                attraction_f_norm = np.linalg.norm(attraction_f)
-                attraction_repulsion_factor = (attraction_f_norm / repulsion_f_norm)
-                attraction_repulsion_factors.append(attraction_repulsion_factor)
-
-                #combine attraction + repulsion forces
-                node_f += attraction_f
-
-                #move
-                node_f_norm = np.linalg.norm(node_f)
-                energy_status_msg += node_f_norm
-                if node_f_norm < EPS:
-                    delta_x = 0
-                else:
-                    delta_x = node_f / np.sqrt(node_f_norm)
-                x[3 * j: 3 * j + 2] += delta_x * .35
-
-            #clear spent force
-            f = np.zeros(3 * n)
-
-            #status msg
-            if i % 1 == 0:
-                x_to_reduction(x)
-                self.normalize_reduction()
-                self.find_dbscan_clusters()
-                print "iteration %s of %s -- energy: %s -- groups: %s -- att-rep-factor: %s" % (
-                    i, iterations,
-                    energy_status_msg if energy_status_msg else '?',
-                    self.n_clusters,
-                    np.mean(attraction_repulsion_factors))
-
-            #clear energy status msg
-            energy_status_msg = 0
-
-        #all done
-        x_to_reduction(x)
-        self.normalize_reduction()
-        self.find_dbscan_clusters()
-
-    def find_dbscan_clusters(self, eps=0.05, min_samples=12):
-        self.layout_clusters = []
-        db = DBSCAN().fit(self.reduction, eps=eps, min_samples=min_samples)
-        labels = db.labels_
-        self.n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-        tmp_layout_clusters = defaultdict(lambda: [0] * self.n_clusters)
-        for i in range(len(labels)):
-            id = self.layout_ids[i]
-            group_index = int(labels[i])
-            if group_index != -1:
-                tmp_layout_clusters[id][group_index] = 1
-        for id in self.layout_ids:
-            self.layout_clusters.append(tmp_layout_clusters[id])
-        self.layout_clusters = np.array(self.layout_clusters)
-
-    def find_mean_shift_clusters(self):
-        self.layout_clusters = []
-        bandwidth = estimate_bandwidth(self.reduction, quantile=0.2, n_samples=500)
-        ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
-        ms.fit(self.reduction)
-        labels = ms.labels_
-        self.n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-        tmp_layout_clusters = defaultdict(lambda: [0] * self.n_clusters)
-        for i in range(len(labels)):
-            id = self.layout_ids[i]
-            group_index = int(labels[i])
-            if group_index != -1:
-                tmp_layout_clusters[id][group_index] = 1
-        for id in self.layout_ids:
-            self.layout_clusters.append(tmp_layout_clusters[id])
-        self.layout_clusters = np.array(self.layout_clusters)
