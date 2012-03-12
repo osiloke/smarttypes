@@ -14,21 +14,23 @@ var load_social_map = function(reduction_id, num_groups){
     global_num_groups = num_groups;
 
     reduction_href = '/social_map/map_data.json?reduction_id='+reduction_id;
-
-    var coord_scale = d3.scale.linear().domain([-0.5,1.5]).range([10,420]);
-    var color_scale = d3.scale.linear().domain([-1,num_groups])
-        .interpolate(d3.interpolateRgb)
-        .range(["#cccccc", "#000000"]);
-    
-    $('#map_data').html('');
-    var svg = d3.select("#map_data").append("svg")
-        .attr("width", 430)
-        .attr("height", 430);
-        
     d3.json(reduction_href, function(data){
-        //console.log(data);
+
+        var coord_scale = d3.scale.linear().domain(
+            [data.min_coord,data.max_coord])
+            .range([10,420]);
+
+        var color_scale = d3.scale.linear().domain([-1,num_groups])
+            .interpolate(d3.interpolateRgb)
+            .range(["#cccccc", "#000000"]);
+        
+        $('#map_data').html('');
+        var svg = d3.select("#map_data").append("svg")
+            .attr("width", 430)
+            .attr("height", 430);
+
         svg.selectAll("circle")
-            .data(data)
+            .data(data.coordinates)
             .enter().append("circle")
             .attr("id", function(d, i) { return "id_" + d.id; })
             .attr("class", function(d, i) { return "group_" + d.group_index; })

@@ -22,21 +22,27 @@ class TwitterReduction(PostgresBaseModel):
         from smarttypes.model.twitter_group import TwitterGroup
         return TwitterGroup.get_by_name_value('reduction_id', self.id, self.postgres_handle)
 
-    def get_details(self, return_all=False):
-        details = []
+    def get_reduction_info(self, return_all=False):
+        coordinates = []
+        min_coord = min(self.x_coordinates + self.y_coordinates)
+        max_coord = max(self.x_coordinates + self.y_coordinates)
         for i in range(len(self.user_ids)):
             user_id = self.user_ids[i]
             x = self.x_coordinates[i]
             y = self.y_coordinates[i]
             group_index = self.group_indices[i]
             if group_index >= 0 or return_all:
-                details.append({
+                coordinates.append({
                     'id': user_id,
                     'x': x,
                     'y': y,
                     'group_index': group_index
                 })
-        return details
+        return {
+            'coordinates':coordinates,
+            'min_coord':min_coord,
+            'max_coord':max_coord,
+        }
 
     def get_in_and_out_links_for_user(self, user_id):
 

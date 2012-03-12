@@ -101,12 +101,6 @@ class GraphReduce(object):
     def figure_out_reduction_distances(self):
         self.reduction_distances = distance.squareform(distance.pdist(self.reduction))
 
-    def get_linlog_objective_score(self):
-        all_distances_sum = np.sum(self.reduction_distances)
-        connected_distances_sum = 1 #use in_degrees here
-        obj_measure = all_distances_sum - np.log(connected_distances_sum)
-        return obj_measure
-
     def reduce_with_linloglayout(self):
         input_file = open(self.linloglayout_input_file_path, 'w')
         for node_id in self.layout_ids:
@@ -123,20 +117,34 @@ class GraphReduce(object):
         ))
         self.load_reduction_from_file()
         self.normalize_reduction()
-        self.figure_out_reduction_distances()
-        self.find_dbscan_groups()
+        #self.find_dbscan_groups()
 
     def reduce_with_particle_filter_simulation():
-
         """
-        interested in finding a 2d reduction where:
-
-         ADAN = ADCN
+        use the following objective function:
+        - produce groups with a lot of link density
         """
-        #interested in finding a 2d reduction where
-        #
+
+    def generate_objective_score(self):
+        """
+        are goal is to is to find a lot of dense link communities
+
+        we're also interested in the linlog objective:
+
+         - http://www.smarttypes.org/blog/graph_reduction_linlog_nbody_simulation
+
+        need to also look at groups from a high level, related groups 
+        should be close together
+
+        high-level we're interested in link prediction
+        """
+        all_distances_sum = np.sum(self.reduction_distances)
+        connected_distances_sum = 1 #use in_degrees here
+        obj_measure = all_distances_sum - np.log(connected_distances_sum)
+        return obj_measure
 
     def find_dbscan_groups(self, eps=0.42, min_samples=12):
+        self.figure_out_reduction_distances()
         S = 1 - (self.reduction_distances / np.max(self.reduction_distances))
         db = DBSCAN().fit(S, eps=eps, min_samples=min_samples)
         self.groups = db.labels_
