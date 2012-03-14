@@ -25,17 +25,17 @@ Graph reduction via linlog n-body simulation
 <p>
 At a high level, the following is about reducing the dimensionality of a graph. 
 Explaining the value of graph reduction is a task left for another day. 
-For now let's just say that graphs are convenient abstractions that can be used to represent complex problems. 
-If you're curious why graphs are such great abstractions check out this from <a href="http://networkscience.wordpress.com/2011/11/21/why-everything-is-a-network/">A Recent Network Science Postdoc</a>. 
+For now let's say that graphs are a convenient way to represent complex problems. 
+If you're curious, check out this from <a href="http://networkscience.wordpress.com/2011/11/21/why-everything-is-a-network/">A Recent Network Science Postdoc</a>. 
 </p>
 
 <p>
 Assuming then, the inherit value in graphs. 
-Reducing the dimensionality of a graph (squeezing out it's essence) is also valuable. 
-There are a lot of methods of dimension reduction. 
-There are a lot of methods of graph analysis. 
+Reducing the dimensionality of a graph (squeezing out it's essence, it's juice) is also valuable. 
+There are a lot of dimension reduction methods. 
+There are a lot of graph analysis methods. 
 The method/model described here uses <a href="http://en.wikipedia.org/wiki/N-body">N-body Simulation</a> to reduce a graph to 2 dimensions.
-Reducing the dimensionality of our graph this much has the nice effect of making it human digestible. 
+Reducing the dimensionality of our graph this much has the nice effect of making it easy to digest and transfer (spread). 
 </p>
 
 <p>
@@ -44,7 +44,7 @@ Stay w/ me for a second.
 We're going to scatter all the nodes in our graph on a 2d surface. 
 Our nodes interact w/ each other until they settle down to an equilibrium. 
 This is known generally as <a href="http://en.wikipedia.org/wiki/Energy_minimization">Energy Minimization</a>, and is commonly used to model complex physical systems. 
-Fans of complexity and social science will see a lot of similarities between this and 
+Fans of complexity and social science will see similarities between this and 
 <a href="http://en.wikipedia.org/wiki/Agent-based_model">Agent Based Modeling</a>.
 </p>
 
@@ -60,14 +60,14 @@ Such clusters, or communities, can be considered as fairly independent compartme
 </blockquote>
 
 <p>
-Luckily Dr. Andreas Noack has done all the hard work. 
-Noack’s LinLog energy model is considered the best force model to preserve the community structure of a graph.
-The following is from his 2007 paper
+Luckily <a href="http://www-sst.informatik.tu-cottbus.de/~an/">Dr. Andreas Noack</a> has done all the hard work. 
+Noack’s LinLog energy model is considered the best objective function for force based community detection.
+The following is from Noack's 2007 paper
 <a href="http://www-sst.informatik.tu-cottbus.de/~an/Publications/JGAA2007.pdf">Energy Models for Graph Clustering</a>.
 </p>
 
 <blockquote>
-edge-repulsion LinLog energy minimize the ratio of the mean distance 
+Edge-repulsion LinLog energy minimizes the ratio of the mean distance 
 between connected end nodes to the mean distance between all end nodes.
 </blockquote>
 
@@ -76,8 +76,17 @@ between connected end nodes to the mean distance between all end nodes.
 </p>
 
 <p>
-I gotta go, more to come!
+All this means is we should strive for a graph layout where the average distance between all nodes 
+equals the log of the average distance between connected nodes.  
+Noack adds a little kicker by also taking the degree of connected nodes into account.
 </p>
+
+<blockquote>
+The beauty of edge repulsion lies in its symmetry: Edges cause both attraction and repulsion. 
+In other words, nodes that attract strongly also repulse strongly. 
+More precisely, each node has consistently (in terms of attraction and repulsion) an 
+influence on the layout proportional to its degree.
+</blockquote>
 
 </div>
 </body>                                    
