@@ -28,12 +28,12 @@ from config import DB_USER, DB_PASSWORD
 connection_string = "host=localhost dbname='smarttypes' user='%s' password='%s'" % (DB_USER, DB_PASSWORD)
 
 site_name = 'SmartTypes'
-site_mantra = 'a tool for social discovery'
+site_mantra = 'open data collection and analysis'
 default_title = '%s - %s' % (site_name, site_mantra)
 site_description = """
-SmartTypes is an open platform for social network exploration. 
-Our aim is to model and understand the complex interactions of niche social groups. 
-Our methods are influenced by statistical mechanics, ecology, and network science. 
-Sign in w/ your twitter account to reserve a spot on our free beta roster.
+SmartTypes is an open and free platform for data collection and analysis.
+Configure our data collection monkeys (we only support twitter data collection at the moment),
+then pick from a list of state-of-art algos to analyze it.  It's easy and insightful!
+We give you pretty visualizations, and a simple "Export to CSV" that complies with our data providers terms of service. 
 """
 site_description = site_description.strip()

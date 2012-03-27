@@ -13,7 +13,7 @@
    height="1052.3622047"
    id="svg2385"
    sodipodi:version="0.32"
-   inkscape:version="0.48.0 r9654"
+   inkscape:version="0.48.2 r9819"
    sodipodi:docname="smarttypes_logo.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.1">
@@ -265,10 +265,10 @@
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
+     inkscape:window-width="1366"
+     inkscape:window-height="687"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="26"
      inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true" />
@@ -280,7 +280,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -325,7 +325,7 @@
          id="tspan2383"
          x="47.816803"
          y="84.069183"
-         style="font-size:17px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:0.67000002px;fill:#999999;fill-opacity:1;font-family:Purisa;-inkscape-font-specification:Purisa">a tool for social discovery</tspan></text>
+         style="font-size:17px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:0.67000002px;fill:#999999;fill-opacity:1;font-family:Purisa;-inkscape-font-specification:Purisa">open data collection and analysis</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:414.99986649%;letter-spacing:2.82999921px;fill:#545454;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa Bold"

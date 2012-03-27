@@ -11,7 +11,8 @@ from smarttypes.utils.postgres_handle import PostgresHandle
 from smarttypes.model.twitter_session import TwitterSession
 
 urls = [
-    (r'^$', controllers.social_map.index),
+    #(r'^$', controllers.social_map.index),
+    (r'^$', controllers.index),
 
     (r'^sign_in/?$', controllers.sign_in),
     (r'^my_account/?$', controllers.my_account),

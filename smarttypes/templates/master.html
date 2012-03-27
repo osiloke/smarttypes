@@ -40,17 +40,17 @@
             </a>
           </li>
 
-          <li>
+          <!--<li>
             <a href="/about">
               About
             </a>
-          </li>
-
-          <!--<li>
-            <a href="/social_map" class="${'active' if active_tab == 'social_map' else ''}">
-              Social map
-            </a>
           </li>-->
+
+          <li>
+            <a href="/social_map" class="${'active' if active_tab == 'social_map' else ''}">
+              Explore
+            </a>
+          </li>
 
           <li py:if="not logged_in_user">
             <a href="/sign_in" class="${'active' if active_tab == 'sign_in' else ''}">
