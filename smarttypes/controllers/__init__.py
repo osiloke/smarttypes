@@ -37,7 +37,8 @@ def save_email(req, session, postgres_handle):
 
 def blog(req, session, postgres_handle):
     changed_url_map = {
-        'blog/graphlab_and_python_vs_complexity': 'blog/modeling_complexity_w_python'
+        'blog/complexity_probability_social_networks_and_python': 'blog/modeling_complexity_w_python',
+        'blog/graphlab_and_python_vs_complexity': 'blog/modeling_complexity_w_python',
     }
     template_path = "blog/index.html"
     if req.path.find('/', 1) > 0:  # path looks like '/blog/something'
