@@ -3,9 +3,9 @@
 About
 ***********************************************************
 
-Smarttypes is an open source (mostly python) library for social network analysis (initially twitter).
+Smarttypes is an open source library for social network analysis (initially twitter).
 
-We provide automated tools to pull and store social connections and content.  Our scripts pull as much data as they can, while respecting service rate limits.
+We provide automated tools to pull and store social connections and content.  Our scripts pull as much data as they can, while respecting provider rate limits.
 
 Data is stored in postgres, and partitioned by year_week.  The db schema is built to scale.
 
@@ -18,16 +18,23 @@ Please see http://www.smarttypes.org/blog/graph_reduction_linlog_nbody_simulatio
 Get going
 ***********************************************************
 
-Following is a pseudo shell script to get going w/ smarttypes. It assumes you have virtualenv and virtualenvwrapper, and your virtualenv directory is ~/.virtualenvs. It also assumes you have a twitter account, and you are following people:
+Following is a pseudo shell script to get going w/ smarttypes. It assumes you have virtualenv and virtualenvwrapper installed, and your virtualenv directory is ~/.virtualenvs. It also assumes you have postgresql installed.  It also assumes you have a twitter account, and you are following people:
 
 #create a smarttypes virtualenv
 $ mkvirtualenv --no-site-packages smarttypes
 
 #get the code from github
+$ cd ~/
+
+#everyone should have a projects dir
+$ mkdir projects
+
 $ cd ~/projects
-$ git clone git@github.com:smarttypes/SmartTypes.git smarttypes
+$ git clone git@github.com:smarttypes/smarttypes.git smarttypes
 
 #add smarttypes to your python path
+#your home dir probably isn't timmyt
+#also double check your python version, mine is 2.7 
 $ echo '/home/timmyt/projects/smarttypes' >> smarttypes.pth; mv smarttypes.pth ~/.virtualenvs/smarttypes/lib/python2.7/site-packages/.
 
 #install dependencies (may not need these exact versions) 
@@ -43,21 +50,21 @@ simplejson==2.3.2
 tweepy==1.8
 
 #add config params
-$ cd smarttypes/smarttypes/
+$ cd ~/projects/smarttypes/smarttypes/
 $ cp config.py.blank config.py
 
 #now fill in config.py, don't worry about sensitive info it's in .gitignore
 
 #to get CONSUMER_KEY and CONSUMER_SECRET you need to register your 
-#application @ https://dev.twitter.com/apps/new
+#twitter app @ https://dev.twitter.com/apps/new
 
 #now, assuming postgres is installed, create the data schema
 $ python scripts/create_db_schema.py
 
-#start the dev_server
+#start a dev server
 $ python start_dev_server.py
 
-#now pull up http://localhost:8282/ in your browser
+#now pull up http://localhost:9999/ in your browser
 
 #click the 'Sign in w/ twitter' link, and sign up for your app
 

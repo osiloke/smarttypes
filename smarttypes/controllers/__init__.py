@@ -62,7 +62,7 @@ def blog(req, session, postgres_handle):
     return d
 
 
-def about(req, session, postgres_handle):
+def contact(req, session, postgres_handle):
     return {}
 
 

@@ -233,7 +233,6 @@ class TwitterUser(PostgresBaseModel):
         properties = copy(cls.table_columns)
         properties[0:0] = ['createddate', 'modifieddate']
         properties.remove('caused_an_error')
-        properties.remove('following_ids')
         try:
             writer = csv.writer(file_like)
             writer.writerow(properties + ['following_ids'])
