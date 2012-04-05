@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import numpy, random, heapq
 import collections, csv, sys
 from copy import copy
+import codecs
 
 
 class TwitterUser(PostgresBaseModel):
@@ -239,10 +240,13 @@ class TwitterUser(PostgresBaseModel):
             for following in cls.get_by_ids(user.following_following_ids, postgres_handle):
                 initial_stuff = []
                 for x in properties:
-                    value = following.__dict__.get(x)
-                    value = unicode(value.strip(codecs.BOM_UTF8), 'utf-8')
-                    initial_stuff.append(value)
-                following_ids_str = '::'.join(following.following_ids)
+                    # try:
+                    #     value = str(following.__dict__.get(x))
+                    # except UnicodeEncodeError:
+                    #     value = following.__dict__.get(x)
+                    #     value = unicode(value.strip(codecs.BOM_UTF8), 'utf-8')
+                    initial_stuff.append(following.__dict__.get(x))
+                following_ids_str = u'::'.join(following.following_ids)
                 writer.writerow(initial_stuff + [following_ids_str])
         finally:
             file_like.close()
