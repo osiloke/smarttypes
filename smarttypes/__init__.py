@@ -31,7 +31,7 @@ site_name = 'SmartTypes'
 site_mantra = 'A tool for social discovery.'
 default_title = '%s - %s' % (site_name, site_mantra)
 site_description = """
-Smarttypes is an open lab for online social network analysis (initially twitter).
+Smarttypes is an open lab for social network analysis (initially twitter).
 We provide automated tools to pull and store social connections and content. 
 Our tools respect data provider rate limits and terms of service.
 Enough of the boring stuff -- our purpose is to help you explore the great social abyss.
