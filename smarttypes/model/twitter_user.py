@@ -237,7 +237,7 @@ class TwitterUser(PostgresBaseModel):
             writer = csv.writer(file_like)
             writer.writerow(properties + ['following_ids'])
             for following in cls.get_by_ids(user.following_following_ids, postgres_handle):
-                initial_stuff = [str(following.__dict__.get(x)) for x in properties]
+                initial_stuff = [following.__dict__.get(x) for x in properties]
                 following_ids_str = '::'.join(following.following_ids)
                 writer.writerow(initial_stuff + [following_ids_str])
         finally:
