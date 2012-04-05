@@ -34,8 +34,7 @@ site_description = """
 Smarttypes is an open lab for social network analysis (initially twitter).
 We provide automated tools to pull and store social connections and content. 
 Our tools respect data provider rate limits and terms of service.
-Enough of the boring stuff -- our purpose is to help you explore the great social abyss.
-We use a combination of R, Python, and Java packages for data analysis.  
-Our collection scripts, and this web app, are built w/ Python.
+Our purpose is to help people explore the great social abyss.
+We use a combination of R, Python, and Java packages for data collection and analysis.  
 """
 site_description = site_description.strip()
