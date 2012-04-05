@@ -244,8 +244,7 @@ class TwitterUser(PostgresBaseModel):
                         value = str(following.__dict__.get(x))
                     except UnicodeEncodeError:
                         value = following.__dict__.get(x)
-                        value = unicode(value.strip(codecs.BOM_UTF8), 'utf-8')
-                        value = str(value)
+                        value = value.encode('ascii', 'ignore')
                     initial_stuff.append(value)
                 following_ids_str = '::'.join(following.following_ids)
                 writer.writerow(initial_stuff + [following_ids_str])
