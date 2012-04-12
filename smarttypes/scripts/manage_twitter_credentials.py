@@ -17,10 +17,10 @@ def list_cred_details():
         root_username = root_user.screen_name if root_user else 'None'
         last_api_query = creds.last_root_user_api_query if creds.last_root_user_api_query else datetime(2000,1,1)
 
-        print 'Creds for: %s \t Email: %s \t Root users: %s \t Created: %s \t Last_api_query: %s' % (
+        print 'Creds:%s -- API:%s -- Email:%s -- Created:%s -- Last_api_query:%s' % (
             string.ljust(creds_username, 12),
-            string.ljust(creds.email if creds.email else '', 30),
             string.ljust(root_username, 12), 
+            string.ljust(creds.email if creds.email else '', 30),
             creds.createddate.strftime('%y_%m_%d'),
             last_api_query.strftime('%y_%m_%d'),
         )
