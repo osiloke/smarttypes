@@ -14,27 +14,29 @@
 
 <body>
 
-<h1>rpy</h1>
+<h1>Using python and R together</h1>
 
 <p>
 i'm a python dev, learning R -- python has it's strengths, R has it's strengths 
-(more on this below) -- getting python and R to work well together is important
+(more on this below)
 </p>
 
 <p>
-after reading this paper
-http://epbi-radivot.cwru.edu/EPBI415/files/wk13if2otherLangs/attic/pypeR.pdf
+after reading 
+<a href="http://epbi-radivot.cwru.edu/EPBI415/files/wk13if2otherLangs/attic/pypeR.pdf"> 
+PypeR, A Python Package for Using R in Python
+</a>
 <br/>
 i decided file-based integration was the best way to go
 </p>
 
 <p>
-python writes everything to a tab-delineated file -- r reads it, does some crunching and writes 
+python writes everything to an easily digestible file -- r reads it, does some crunching and writes 
 to it's own file
 </p>
 
 <p>
-this is from the paper referenced above:
+the problem w/ tools like rpy is memory consumption -- this is from the paper referenced above:
 </p>
 
 <blockquote>
@@ -45,16 +47,11 @@ and improves speed. However, memory consumption remains a problem.
 </blockquote>
 
 <p>
-the following is from 
-<a href="https://twitter.com/#!/DataJunkie">Ryan Rosario's</a> wonderful rpy2 meetup presentation:
+OK -- let's address the bigger question, why python + R -- the following is from 
+<a href="https://twitter.com/#!/DataJunkie">Ryan Rosario's</a> rpy2 la meetup presentation:
 <br/>
 <a href="http://www.bytemining.com/wp-content/uploads/2010/10/rpy2.pdf">http://www.bytemining.com/wp-content/uploads/2010/10/rpy2.pdf</a>
 </p>
-
-<blockquote>
-RPy2 is a rewrite of RPy, providing for a more user friendly
-experience and expanded capabilities
-</blockquote>
 
 <p>
 Rosario asks *and answers* the question
@@ -79,12 +76,8 @@ more natural object-oriented features
 </ul>
 
 <p>
-I'm a python dev just learning R -- so why the hell would i use R -- 
-Rosario answers that as well
-<br/>
-<span style="font-weight:bold;">
-'And, What are the Advantages of R over python':
-</span>
+so why would someone use R -- 
+Rosario answers that as well:
 </p>
 
 <ul>
